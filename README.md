@@ -4,7 +4,7 @@ Send HTTP calls to control your Trinnov processor (tested with JBL Synthesis SDP
 
 ![image](https://github.com/Morveus/TrinnovRemote/assets/2972468/03382891-495b-46df-a59c-17ac58ab1d11)
 
-This is a simple Python application designed to run in a home automation system. 
+This is a simple Python server application designed to run in a home automation system. 
 
 # Current status
 - 🟢 Reverse engineering Trinnov's websocket from the amplifier's internal webpage
