@@ -15,6 +15,7 @@ This is a simple Python application designed to run in a home automation system.
 - 🔴 Add sources switch
 - 🔴 Make calls fully async
 - 🔴 Get volume from the amp at startup, and update it from time to time
+- ⚫ Cleaner code, refactoring
 
 The app provides a web server with endpoints to control the volume and source of an amplifier via its WebSocket messages.
 
