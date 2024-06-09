@@ -12,9 +12,9 @@ This is a simple Python server application designed to run in a home automation 
 - 🟢 First iteration (volume up/down/dim/undim)
 - 🟢 Add a "set volume" call
 - 🟢 Get variables (IP, port) from env (Docker, Kubernetes) 
-- 🔴 Add sources switch
+- 🟢 Add sources switch
 - 🔴 Get volume from the amp at startup, and update it from time to time
-- ⚫ Cleaner code, refactoring
+- 🟠 Cleaner code, refactoring
 
 The app provides a web server with endpoints to control the volume and source of an amplifier via its WebSocket messages.
 
@@ -25,17 +25,21 @@ It is still a WIP as I'm building a new home theater (and the home around it) th
 ## Features
 
 - **Volume Control Endpoints:**
-  - `/volume/plus`: Increase the volume.
-  - `/volume/minus`: Decrease the volume.
-  - `/volume/mute`: Mute the volume.
-  - `/volume/dim`: Dim the volume.
-  - `/volume/undim`: Undim the volume.
+  - `/volume/plus` or `up`: Increase the volume
+  - `/volume/minus` or `down`: Decrease the volume
+  - `/volume/mute`: Mute
+  - `/volume/unmute`: Unmute
+  - `/volume/togglemute`: Toggle mute
+  - `/volume/dim`: Dim the volume
+  - `/volume/undim`: Undim the volume
+  - `/volume/toggledim`: Toggles the dim feature
 
 - **Source Control Endpoints:**
-  - `/source/hdmi1`: Switch to HDMI1.
-  - `/source/hdmi2`: Switch to HDMI2.
-  - `/source/hdmi3`: Switch to HDMI3.
-  - `/source/hdmi4`: Switch to HDMI4.
+  - `/source/0`: Switch to HDMI1.
+  - `/source/1`: Switch to HDMI2.
+  - ........
+  - `/source/29`: Switch to ANALOG SE4 IN.
+  - `/source/hdmi4`: Switch to ROON.
 
 ## WebSocket Communication
 
@@ -43,7 +47,8 @@ When any of the endpoints are called, a message is sent to the amplifier via a W
 
 ## Environment Variables
 
-- `AMPLIFIER_IP`: The IP address of the amplifier (default is mine, `192.168.1.91`).
+- `TRINNOV_AMPLIFIER_IP`: The IP address of the amplifier (default is mine, `192.168.1.91`)
+- `TRINNOV_REMOTE_PORT`: port on which you want this Python app to listen to (default `5555`)
 
 ## Usage
 
@@ -106,15 +111,24 @@ To increase the volume:
 curl http://your-server-ip:5555/volume/plus
 ```
 
+To dim the volume, have a conversation with the intruder then go back to your movie:
+```bash
+curl http://your-server-ip:5555/volume/toggledim
+...
+curl http://your-server-ip:5555/volume/toggledim
+```
+
 To change the source to HDMI1:
 ```bash
-curl http://your-server-ip:5555/source/hdmi1
+curl http://your-server-ip:5555/source/0
 ```
 
 
 ## Notes
 
 Volume is set to -60 when the app starts. The app being the "source of truth" in my system. Feel free to modify the code to suit your needs.
+
+(this will change in a future update, I want to get the amp's config at startup and update it periodically)
 
 
 # Contributing
