@@ -20,6 +20,8 @@ amplifier_ip = os.getenv('TRINNOV_AMPLIFIER_IP', '192.168.1.91')
 listen_port = os.getenv('TRINNOV_REMOTE_PORT', '5555')
 websocket_url = f"ws://{amplifier_ip}/ws"
 
+mqtt_enabled = os.getenv('MQTT_ENABLED', 1)
+mqtt_enable_homeassistant = os.getenv('MQTT_ENABLE_HA_DISCOVERY', 1)
 mqtt_broker = os.getenv('MQTT_BROKER', 'localhost')
 mqtt_port = int(os.getenv('MQTT_PORT', '1883'))
 mqtt_name = os.getenv('MQTT_DEVICE_NAME', 'TrinnovAmplitude')
@@ -205,6 +207,9 @@ def set_source(id):
     set_mqtt_values()
 
 def publish_discovery_config():
+    if(mqtt_enable_homeassistant != 1):
+        return
+
     device_config = {
         "identifiers": [mqtt_identifier],
         "manufacturer": "Trinnov",
@@ -280,6 +285,9 @@ def publish_discovery_config():
     publish.multiple(msgs, hostname=mqtt_broker, port=mqtt_port, protocol=MQTTProtocolVersion.MQTTv5)
 
 def set_mqtt_values():
+    if(mqtt_enabled != 1):
+        return
+
     print("Publishing to MQTT topic " + mqtt_topic)
 
     message_volume = volume
