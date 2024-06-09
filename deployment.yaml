@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trinnov-remote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trinnov-remote
+  template:
+    metadata:
+      labels:
+        app: trinnov-remote
+    spec:
+      containers:
+      - name: trinnov-remote
+        image: morveus/trinnov-remote:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: AMPLIFIER_IP
+          value: "192.168.1.91"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trinnov-remote-service
+spec:
+  selector:
+    app: trinnov-remote
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer
