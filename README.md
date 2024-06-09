@@ -10,10 +10,9 @@ This is a simple Python server application designed to run in a home automation 
 - 🟢 Reverse engineering Trinnov's websocket from the amplifier's internal webpage
 (why the leading byte arrays and the 15 trailing zeroes in the volume variable ?)
 - 🟢 First iteration (volume up/down/dim/undim)
-- 🟠 Add a "set volume" call
-- 🟠 Get variables (IP, default volume, port) from env (Docker, Kubernetes) 
+- 🟢 Add a "set volume" call
+- 🟢 Get variables (IP, port) from env (Docker, Kubernetes) 
 - 🔴 Add sources switch
-- 🔴 Make calls fully async
 - 🔴 Get volume from the amp at startup, and update it from time to time
 - ⚫ Cleaner code, refactoring
 
