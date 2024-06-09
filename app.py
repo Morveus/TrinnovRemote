@@ -11,7 +11,8 @@ app = Flask(__name__)
 volume = -60
 muted = False
 dimmed = False
-amplifier_ip = os.getenv('AMPLIFIER_IP', '192.168.1.91')
+amplifier_ip = os.getenv('TRINNOV_AMPLIFIER_IP', '192.168.1.91')
+listen_port = os.getenv('TRINNOV_REMOTE_PORT', '5555')
 websocket_url = f"ws://{amplifier_ip}/ws"
 
 async def send_websocket_message(message, reply=False):
@@ -164,4 +165,4 @@ def index():
 
 if __name__ == '__main__':
     # get_config()
-    app.run(host='0.0.0.0', port=5555)
+    app.run(host='0.0.0.0', port=listen_port)
