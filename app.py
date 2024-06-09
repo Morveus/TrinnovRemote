@@ -11,6 +11,7 @@ app = Flask(__name__)
 volume = -60
 muted = False
 dimmed = False
+source_id = 1
 amplifier_ip = os.getenv('TRINNOV_AMPLIFIER_IP', '192.168.1.91')
 listen_port = os.getenv('TRINNOV_REMOTE_PORT', '5555')
 websocket_url = f"ws://{amplifier_ip}/ws"
@@ -31,13 +32,13 @@ async def send_websocket_message(message, reply=False):
         #     except asyncio.TimeoutError:
         #         print("Timeout error: No reply received")
 
-def build_message(message_byte, path, command):
+def build_message(message_byte, end_byte, path, command):
     command_bytes = command.encode()
     path_bytes = path.encode()
     part1 = bytearray(b'\x00\x00\x00')
-    part2 = bytearray(b'\x03\x00\x00\x00\x12')
+    part2 = bytearray(b'\x03\x00\x00\x00')
     message = bytearray()
-    message = part1 + message_byte + part2 + path_bytes + command_bytes
+    message = part1 + message_byte + part2 + end_byte + path_bytes + command_bytes
 
     return message
 
@@ -52,10 +53,10 @@ def volume_action(action):
 
     print('Checking action...')
 
-    if action == 'plus':
+    if action == 'plus' or 'up':
         volume += 1
         set_volume()
-    elif action == 'minus':
+    elif action == 'minus' or 'down':
         volume -= 1
         set_volume()
     elif action == 'mute':
@@ -110,7 +111,7 @@ def set_volume():
     global volume
     message_byte = bytearray(b'\x35') # '5'
     formatted_volume = format_volume(volume)
-    volume_message = build_message(message_byte, '/optimizer/volume/', f'{{"volume":{formatted_volume}}}')
+    volume_message = build_message(message_byte, b'\x12', '/optimizer/volume/', f'{{"volume":{formatted_volume}}}')
     asyncio.run(send_websocket_message(volume_message))
 
 def set_mute(value):
@@ -126,7 +127,7 @@ def set_mute(value):
 
         muted = value
 
-        message = build_message(message_byte, '/optimizer/volume/', f'{{"mute":{message_value}}}')
+        message = build_message(message_byte, b'\x12', '/optimizer/volume/', f'{{"mute":{message_value}}}')
         asyncio.run(send_websocket_message(message))
     
 def set_dimmed(value):
@@ -141,19 +142,29 @@ def set_dimmed(value):
 
         dimmed = value
 
-        message = build_message(message_byte, '/optimizer/volume/', f'{{"dim":{message_value}}}')
+        message = build_message(message_byte, b'\x12', '/optimizer/volume/', f'{{"dim":{message_value}}}')
         asyncio.run(send_websocket_message(message))
 
-# TODO
+def set_source(id):
+    global source_id
+    id = int(id)
+    if(id == source_id):
+        return "Source already set"
+    
+    source_id = id
+
+    # Don't ask me why, I don't know yet (this byte changes after source 10)
+    if(id < 10):
+        message_byte = bytearray(b'\x22') # "double quotes"
+    else:
+        message_byte = bytearray(b'\x23') # "pound sign"
+    
+    message = build_message(message_byte, b'\x15', '/metapresets/current/', f'{{"id":{id}}}')
+    asyncio.run(send_websocket_message(message))
+
 @app.route('/source/<source>', methods=['GET'])
 def change_source(source):
-    valid_sources = ['hdmi1', 'hdmi2', 'hdmi3', 'hdmi4']
-
-    if source not in valid_sources:
-        return "Invalid source", 400
-
-    message = json.dumps({"source": source})
-    asyncio.run(send_websocket_message(message))
+    set_source(source)
 
     return f"Source changed to {source}", 200
 
