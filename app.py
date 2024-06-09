@@ -317,12 +317,13 @@ def index():
 
 if __name__ == '__main__':
     # get_config()
-    publish_discovery_config()
-    set_mqtt_values()
     
-    # Start the MQTT client in a separate thread
-    mqtt_thread = threading.Thread(target=setup_mqtt_client)
-    mqtt_thread.daemon = True
-    mqtt_thread.start()
+    if(mqtt_enabled == 1):
+        publish_discovery_config()
+        set_mqtt_values()
+        # Start the MQTT client in a separate thread
+        mqtt_thread = threading.Thread(target=setup_mqtt_client)
+        mqtt_thread.daemon = True
+        mqtt_thread.start()
 
     app.run(host='0.0.0.0', port=listen_port)
