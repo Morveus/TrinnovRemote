@@ -6,9 +6,20 @@ Send HTTP calls to control your Trinnov processor (tested with JBL Synthesis SDP
 
 This is a simple Python application designed to run in a home automation system. 
 
+# Current status
+🟢 Reverse engineering Trinnov's websocket from the amplifier's internal webpage (why the leading byte arrays and the 15 trailing zeroes in the volume variable ?)
+🟢 First iteration (volume up/down/dim/undim)
+🟠 Add a "set volume" call
+🟠 Get variables (IP, default volume, port) from env (Docker, Kubernetes) 
+🔴 Add sources switch
+🔴 Make calls fully async
+🔴 Get volume from the amp at startup, and update it from time to time
+
 The app provides a web server with endpoints to control the volume and source of an amplifier via its WebSocket messages.
 
 Since most home automation systems work best with HTTP calls, there it is.
+
+It is still a WIP as I'm building a new home theater (and the home around it) that should be ready in 2025. I hope this project will be fully useable and integrated by then. 
 
 ## Features
 
