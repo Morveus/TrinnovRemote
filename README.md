@@ -1,4 +1,4 @@
-# Trinnov Remote
+# Trinnov HTTP Remote for HomeAutomation
 
 Send HTTP calls to control your Trinnov processor (tested with JBL Synthesis SDP-75)
 
